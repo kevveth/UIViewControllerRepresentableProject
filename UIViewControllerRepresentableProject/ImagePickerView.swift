@@ -8,16 +8,8 @@
 import SwiftUI
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePickerView
-        init(parent: ImagePickerView) {
-            self.parent = parent
-        }
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print("They selected something!")
-    }
+    @Binding var selectedImage: UIImage?
+    @Environment(\.dismiss) private var dismiss
     
     func makeUIViewController(context: Self.Context) -> UIImagePickerController {
         let imagePickerVC = UIImagePickerController()
@@ -35,6 +27,17 @@ struct ImagePickerView: UIViewControllerRepresentable {
     
 }
 
-#Preview {
-    ImagePickerView()
+extension ImagePickerView {
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePickerView
+        init(parent: ImagePickerView) {
+            self.parent = parent
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            guard let image = info[.originalImage] as? UIImage else { return }
+            parent.selectedImage = image
+            parent.dismiss()
+        }
+    }
 }

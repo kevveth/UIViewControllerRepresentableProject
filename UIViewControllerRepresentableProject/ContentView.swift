@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var showImagePickerView = false
     @State private var selectedImage: UIImage?
+    @State private var image = UIImage()
     
     var imageView: Image {
         guard let selectedImage = selectedImage else {
@@ -36,7 +37,7 @@ struct ContentView: View {
             
         }
         .sheet(isPresented: $showImagePickerView) {
-            ImagePickerView()
+            ImagePickerView(selectedImage: $selectedImage)
         }
     }
 }
